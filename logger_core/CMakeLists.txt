@@ -7,6 +7,8 @@ add_library(logger_core
   src/logger_registry.cpp
 )
 
+
+
 add_library(sim_logger::core ALIAS logger_core)
 
 target_include_directories(logger_core
@@ -16,7 +18,10 @@ target_include_directories(logger_core
 
 # Keep core dependency-free in Sprint 1.
 # (Later sprints may add fmt, json, etc.)
-target_compile_features(logger_core PUBLIC cxx_std_20)
+target_compile_features(logger_core PRIVATE cxx_std_17)
+
+find_package(Threads REQUIRED)
+target_link_libraries(logger_core PRIVATE Threads::Threads)
 
 # Warnings (inherit top-level flags, but allow per-target additions later)
 if(MSVC)

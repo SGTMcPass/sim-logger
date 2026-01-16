@@ -1,9 +1,10 @@
-#include "minitest.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include "logger/logger_registry.hpp"
 #include "logger/test_sink.hpp"
 
 #include <thread>
+#include <vector>
 
 namespace {
 
@@ -113,3 +114,4 @@ TEST_CASE("Sinks are inherited dynamically when not overridden", "[sprint2][regi
   REQUIRE(sink1->size() == 1);
   REQUIRE(sink2->size() == 1);
 }
+

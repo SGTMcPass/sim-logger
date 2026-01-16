@@ -15,9 +15,12 @@ option(LOGGER_BUILD_EXAMPLES "Build examples" ON)
 # -----------------------------
 # Global build settings
 # -----------------------------
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+#if (PROJECT_IS_TOP_LEVEL)
+#  set(CMAKE_CXX_STANDARD 17)
+#  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#  set(CMAKE_CXX_EXTENSIONS OFF)
+#endif()
+
 
 # Helpful defaults for debug builds
 if(NOT CMAKE_BUILD_TYPE)

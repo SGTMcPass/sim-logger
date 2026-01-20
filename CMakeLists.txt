@@ -14,48 +14,48 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CTest) # defines BUILD_TESTING
 
-# -----------------------------
-# Dependencies (resolved ONCE)
-# -----------------------------
-# We keep dependency targets available globally so subdirs can just link them.
-
-# ---- Catch2 ----
-set(SIM_LOGGER_CATCH2_EXTRAS_DIR "")
-
-if (EXISTS "${PROJECT_SOURCE_DIR}/third_party/Catch2/CMakeLists.txt")
-  # Vendored Catch2
-  set(_catch2_src "${PROJECT_SOURCE_DIR}/third_party/Catch2")
-  set(_catch2_bin "${CMAKE_BINARY_DIR}/_deps/catch2-build")
-  add_subdirectory("${_catch2_src}" "${_catch2_bin}" EXCLUDE_FROM_ALL)
-
-  set(SIM_LOGGER_CATCH2_EXTRAS_DIR "${_catch2_src}/extras")
-
-else()
-  # System Catch2 (preferred over network)
-  find_package(Catch2 3 QUIET)
-
-  if (Catch2_FOUND)
-    # Usually include(Catch) will work without module-path tweaks.
-    # If it doesn't on some platforms, vendoring is the recommended path.
-  elseif (SIM_LOGGER_USE_FETCHCONTENT)
-    include(FetchContent)
-    FetchContent_Declare(
-      Catch2
-      GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-      GIT_TAG v3.5.4
-    )
-    FetchContent_MakeAvailable(Catch2)
-    set(SIM_LOGGER_CATCH2_EXTRAS_DIR "${catch2_SOURCE_DIR}/extras")
-  else()
-    message(FATAL_ERROR
-      "Catch2 not found.\n"
-      "Provide ${PROJECT_SOURCE_DIR}/third_party/Catch2, install Catch2 v3, or configure with:\n"
-      "  -DSIM_LOGGER_USE_FETCHCONTENT=ON\n"
-    )
-  endif()
-endif()
-
 if (BUILD_TESTING)
+  # -----------------------------
+  # Dependencies (tests only)
+  # -----------------------------
+  # Resolve Catch2 only when tests are enabled. This keeps offline/non-test
+  # builds working even when Catch2 is not vendored.
+
+  set(SIM_LOGGER_CATCH2_EXTRAS_DIR "")
+
+  if (EXISTS "${PROJECT_SOURCE_DIR}/third_party/Catch2/CMakeLists.txt")
+    # Vendored Catch2
+    set(_catch2_src "${PROJECT_SOURCE_DIR}/third_party/Catch2")
+    set(_catch2_bin "${CMAKE_BINARY_DIR}/_deps/catch2-build")
+    add_subdirectory("${_catch2_src}" "${_catch2_bin}" EXCLUDE_FROM_ALL)
+
+    set(SIM_LOGGER_CATCH2_EXTRAS_DIR "${_catch2_src}/extras")
+
+  else()
+    # System Catch2 (preferred over network)
+    find_package(Catch2 3 QUIET)
+
+    if (Catch2_FOUND)
+      # Usually include(Catch) will work without module-path tweaks.
+      # If it doesn't on some platforms, vendoring is the recommended path.
+    elseif (SIM_LOGGER_USE_FETCHCONTENT)
+      include(FetchContent)
+      FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.5.4
+      )
+      FetchContent_MakeAvailable(Catch2)
+      set(SIM_LOGGER_CATCH2_EXTRAS_DIR "${catch2_SOURCE_DIR}/extras")
+    else()
+      message(FATAL_ERROR
+        "Catch2 not found.\n"
+        "Provide ${PROJECT_SOURCE_DIR}/third_party/Catch2, install Catch2 v3, or configure with:\n"
+        "  -DSIM_LOGGER_USE_FETCHCONTENT=ON\n"
+      )
+    endif()
+  endif()
+
   if (NOT TARGET Catch2::Catch2WithMain)
     message(FATAL_ERROR "Catch2 resolved but target Catch2::Catch2WithMain does not exist.")
   endif()

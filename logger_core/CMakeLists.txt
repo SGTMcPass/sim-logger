@@ -9,6 +9,7 @@ add_library(logger_core
   src/global_time.cpp
   src/console_sink.cpp
   src/file_sink.cpp
+  src/rotating_file_sink.cpp
 )
 
 

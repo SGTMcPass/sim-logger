@@ -10,6 +10,7 @@ add_executable(sim_logger_tests
   test_pattern_formatter.cpp
   test_console_sink.cpp
   test_file_sink.cpp
+  test_rotating_file_sink.cpp
   test_immediate_flush.cpp
   test_log_macros.cpp
   test_c_api.c
